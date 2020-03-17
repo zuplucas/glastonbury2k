@@ -25,10 +25,8 @@ public class PaymentCallbackListener {
 
     @KafkaListener(topics = "payment-event", groupId = KafkaConfiguration.CONSUMER_GROUP)
     public void listen(String message) throws IOException {
-        OrderCreatedEvent event = this.objectMapper.readValue(message, OrderCreatedEvent.class);
-        System.out.println(event);
-
-        String orderId = event.getOrderId();
+        // Read message, parse, check orderId and payment result
+        String orderId = "TO BE DEFINED";
 
         runtimeService.createMessageCorrelation("payment_callback")
                 .processInstanceBusinessKey("ORDER-" + orderId)
