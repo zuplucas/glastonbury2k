@@ -3,13 +3,13 @@ package br.com.zup.inventory.controller.request;
 import java.util.Map;
 
 public class BookRequest {
-    private Map<String, Integer> orderEntries;
+    private Map<String, String> orderEntries;
 
-    public Map<String, Integer> getOrderEntries() {
+    public Map<String, String> getOrderEntries() {
         return orderEntries;
     }
 
-    public void setOrderEntries(Map<String, Integer> orderEntries) {
+    public void setOrderEntries(Map<String, String> orderEntries) {
         this.orderEntries = orderEntries;
     }
 }
