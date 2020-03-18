@@ -1,16 +1,15 @@
 package br.com.zup.order.orchestrator.listener;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.camunda.bpm.engine.RuntimeService;
-import org.camunda.bpm.engine.variable.Variables;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.zup.order.orchestrator.configuration.KafkaConfiguration;
-import br.com.zup.order.orchestrator.event.OrderCreatedEvent;
 
 @Component
 public class PaymentCallbackListener {
@@ -26,11 +25,18 @@ public class PaymentCallbackListener {
     @KafkaListener(topics = "payment-event", groupId = KafkaConfiguration.CONSUMER_GROUP)
     public void listen(String message) throws IOException {
         // Read message, parse, check orderId and payment result
-        String orderId = "TO BE DEFINED";
+    	Map<String, String> event = this.objectMapper.readValue(message, Map.class);
+        String orderId = event.get("orderId");
+
+        int low = 10;
+        int high = 100;
+        int r = (int) (Math.random() * (high - low)) + low;
+        boolean result = (r % 2) == 0;
 
         runtimeService.createMessageCorrelation("payment_callback")
                 .processInstanceBusinessKey("ORDER-" + orderId)
-                .setVariable("PAYMENT_RESULT", true)
+                .setVariable("PAYMENT_RESULT", result)
+                .setVariable("ORDER_LIST", message)
                 .correlateWithResult();
     }
 }

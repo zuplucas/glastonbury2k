@@ -8,12 +8,12 @@ public class OrderCreatedEvent {
     private String orderId;
     private String customerId;
     private BigDecimal amount;
-    private Map<String, Integer> items;
+    private Map<String, String> items;
 
     public OrderCreatedEvent() {
     }
 
-    public OrderCreatedEvent(String orderId, String customerId, BigDecimal amount, Map<String, Integer> items) {
+    public OrderCreatedEvent(String orderId, String customerId, BigDecimal amount, Map<String, String> items) {
         this.orderId = orderId;
         this.customerId = customerId;
         this.amount = amount;
@@ -44,11 +44,11 @@ public class OrderCreatedEvent {
         this.amount = amount;
     }
 
-    public Map<String, Integer> getItems() {
+    public Map<String, String> getItems() {
         return items;
     }
 
-    public void setItems(Map<String, Integer> items) {
+    public void setItems(Map<String, String> items) {
         this.items = items;
     }
 }

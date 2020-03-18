@@ -1,6 +1,7 @@
 package br.com.zup.order.service.impl;
 
 import br.com.zup.order.controller.request.CreateOrderRequest;
+import br.com.zup.order.controller.request.DeleteOrderRequest;
 import br.com.zup.order.controller.response.OrderResponse;
 import br.com.zup.order.event.OrderCreatedEvent;
 import br.com.zup.order.repository.OrderRepository;
@@ -58,4 +59,13 @@ public class OrderServiceImpl implements OrderService {
                 .map(OrderResponse::fromEntity)
                 .collect(Collectors.toList());
     }
+
+	@Override
+	public void remove(DeleteOrderRequest request) {
+		try {
+			this.orderRepository.deleteById(request.getOrderId());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
