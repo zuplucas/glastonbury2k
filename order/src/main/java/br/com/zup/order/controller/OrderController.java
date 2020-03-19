@@ -1,6 +1,7 @@
 package br.com.zup.order.controller;
 
 import br.com.zup.order.controller.request.CreateOrderRequest;
+import br.com.zup.order.controller.request.UpdateStatusOrderRequest;
 import br.com.zup.order.controller.response.OrderResponse;
 import br.com.zup.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/orders")
-public class OrderController {
+public class OrderController implements OrderApi {
 
     private OrderService orderService;
 
@@ -21,15 +22,18 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Override
     public String create(@RequestBody CreateOrderRequest request) {
         return this.orderService.save(request);
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Override
     public List<OrderResponse> getOrders() {
         return this.orderService.findAll();
+    }
+
+    @Override
+    public void updateStatus(@RequestBody UpdateStatusOrderRequest request) {
+        this.orderService.update(request);
     }
 }

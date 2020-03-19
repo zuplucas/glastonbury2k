@@ -24,7 +24,7 @@ public class InventoryFeignConfig {
 
 
     @Bean
-    public InventoryApi paymentApi() {
+    public InventoryApi inventoryApi() {
         return Feign.builder()
                 .encoder(new JacksonEncoder(objectMapper))
                 .decoder(new JacksonDecoder(objectMapper))

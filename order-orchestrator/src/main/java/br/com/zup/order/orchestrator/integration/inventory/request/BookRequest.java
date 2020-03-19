@@ -1,15 +1,32 @@
 package br.com.zup.order.orchestrator.integration.inventory.request;
 
-import java.util.Map;
+
+import br.com.zup.order.orchestrator.event.OrderCreatedItemEvent;
+
+import java.util.List;
 
 public class BookRequest {
-    private Map<String, Integer> orderEntries;
+    private String orderId;
+    private List<OrderCreatedItemEvent> orderEntries;
 
-    public Map<String, Integer> getOrderEntries() {
+    public BookRequest(String orderId, List<OrderCreatedItemEvent> orderEntries) {
+        this.orderId = orderId;
+        this.orderEntries = orderEntries;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public List<OrderCreatedItemEvent> getOrderEntries() {
         return orderEntries;
     }
 
-    public void setOrderEntries(Map<String, Integer> orderEntries) {
+    public void setOrderEntries(List<OrderCreatedItemEvent> orderEntries) {
         this.orderEntries = orderEntries;
     }
 }
