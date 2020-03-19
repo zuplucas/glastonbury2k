@@ -24,9 +24,8 @@ public class BookingTask implements JavaDelegate{
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
         String orderVariable = (String)delegateExecution.getVariable("ORDER");
-        OrderCreatedEvent event = this.objectMapper.readValue(orderVariable, OrderCreatedEvent.class);
-        BookRequest bookRequest = new BookRequest();
-        bookRequest.setOrderEntries(event.getItems());
+        OrderCreatedEvent order = this.objectMapper.readValue(orderVariable, OrderCreatedEvent.class);
+        BookRequest bookRequest = new BookRequest(order.getOrderId(), order.getItems());
         this.inventoryApi.book(bookRequest);
     }
 }

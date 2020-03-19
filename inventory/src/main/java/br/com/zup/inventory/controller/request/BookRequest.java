@@ -1,15 +1,17 @@
 package br.com.zup.inventory.controller.request;
 
-import java.util.Map;
+import br.com.zup.inventory.event.OrderCreatedItemEvent;
+
+import java.util.List;
 
 public class BookRequest {
-    private Map<String, Integer> orderEntries;
+    private List<OrderCreatedItemEvent> orderEntries;
 
-    public Map<String, Integer> getOrderEntries() {
+    public List<OrderCreatedItemEvent> getOrderEntries() {
         return orderEntries;
     }
 
-    public void setOrderEntries(Map<String, Integer> orderEntries) {
+    public void setOrderEntries(List<OrderCreatedItemEvent> orderEntries) {
         this.orderEntries = orderEntries;
     }
 }

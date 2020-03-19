@@ -43,7 +43,6 @@
                 <version>2.1.4.RELEASE</version>
             </dependency>
 
-
             <!-- Feign Netflix -->
             <dependency>
                 <groupId>io.github.openfeign</groupId>
