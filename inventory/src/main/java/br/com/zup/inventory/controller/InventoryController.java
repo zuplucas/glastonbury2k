@@ -1,5 +1,8 @@
 package br.com.zup.inventory.controller;
 
+import java.util.Random;
+
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,16 +16,30 @@ import br.com.zup.inventory.controller.request.BookRequest;
 
 @RestController
 @RequestMapping("/inventory")
-public class InventoryController implements InventoryApi{
+public class InventoryController implements InventoryApi {
 
-    @Autowired
-    public InventoryController() {
+	@Autowired
+	public InventoryController() {
 
-    }
+	}
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "/booking", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void book(@RequestBody BookRequest request) {
-        System.out.println(request.getOrderEntries());
-    }
+	@ResponseStatus(HttpStatus.CREATED)
+	@PostMapping(value = "/booking", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public Boolean book(@RequestBody BookRequest request) throws BpmnError {
+		System.out.println("Inventory Booking book");
+		System.out.println(request.getOrderEntries());
+
+		Random r = new Random();
+
+		if (r.nextInt(2) % 2 == 0) {
+			System.out.println("SUCESS");
+			System.out.println(request);
+			return Boolean.TRUE;
+		} else {
+			System.out.println("ERROR");
+			System.out.println(request);
+			System.out.println("THROWS BPMN Error - InventoryApiError");
+			return Boolean.FALSE;
+		}
+	}
 }
