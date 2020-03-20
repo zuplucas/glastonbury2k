@@ -2,12 +2,14 @@ package br.com.zup.order.service.impl;
 
 import br.com.zup.order.controller.request.CreateOrderRequest;
 import br.com.zup.order.controller.response.OrderResponse;
+import br.com.zup.order.entity.Order;
 import br.com.zup.order.event.OrderCreatedEvent;
 import br.com.zup.order.repository.OrderRepository;
 import br.com.zup.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -57,5 +59,12 @@ public class OrderServiceImpl implements OrderService {
                 .stream()
                 .map(OrderResponse::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void updateStatus(String orderId, String status) {
+        System.out.println("Order " + orderId + " changed to " + status);
+        this.orderRepository.updateStatus(orderId, status);
     }
 }

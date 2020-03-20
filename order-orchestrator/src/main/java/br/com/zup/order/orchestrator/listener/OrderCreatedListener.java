@@ -26,7 +26,7 @@ public class OrderCreatedListener {
     @KafkaListener(topics = "created-orders", groupId = KafkaConfiguration.CONSUMER_GROUP)
     public void listen(String message) throws IOException {
         OrderCreatedEvent event = this.objectMapper.readValue(message, OrderCreatedEvent.class);
-        System.out.println(event);
+//        System.out.println(event);
 
         runtimeService.startProcessInstanceByKey("order-process",
                 "ORDER-" + event.getOrderId(),
