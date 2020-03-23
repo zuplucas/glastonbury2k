@@ -1,15 +1,15 @@
 package br.com.zup.order.orchestrator.integration.inventory.request;
 
+import java.io.Serializable;
 import java.util.Map;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public class BookRequest {
-    private Map<String, Integer> orderEntries;
-
-    public Map<String, Integer> getOrderEntries() {
-        return orderEntries;
-    }
-
-    public void setOrderEntries(Map<String, Integer> orderEntries) {
-        this.orderEntries = orderEntries;
-    }
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class BookRequest implements Serializable {
+  private static final long serialVersionUID = -6964824150585870049L;
+  private Map<String, Integer> orderEntries;
 }

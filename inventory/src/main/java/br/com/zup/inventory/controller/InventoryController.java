@@ -1,28 +1,28 @@
 package br.com.zup.inventory.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import br.com.zup.inventory.controller.request.BookRequest;
+import br.com.zup.inventory.service.InventoryService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
-
-import br.com.zup.inventory.controller.request.BookRequest;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/inventory")
-public class InventoryController implements InventoryApi{
+@AllArgsConstructor
+public class InventoryController implements InventoryApi {
 
-    @Autowired
-    public InventoryController() {
+  private InventoryService inventoryService;
 
-    }
+  @ResponseStatus(HttpStatus.CREATED)
+  @PostMapping(value = "/booking", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public void booking(@RequestBody BookRequest request) throws Exception {
+    this.inventoryService.bookTicket(request);
+  }
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "/booking", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void book(@RequestBody BookRequest request) {
-        System.out.println(request.getOrderEntries());
-    }
+  @ResponseStatus(HttpStatus.ACCEPTED)
+  @PostMapping(value = "/unbooking", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public void unbooking(@RequestBody BookRequest request) throws Exception {
+    this.inventoryService.unbookTicket(request);
+  }
 }
