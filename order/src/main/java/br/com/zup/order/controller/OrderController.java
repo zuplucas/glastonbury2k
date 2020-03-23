@@ -1,6 +1,7 @@
 package br.com.zup.order.controller;
 
 import br.com.zup.order.controller.request.CreateOrderRequest;
+import br.com.zup.order.controller.request.UpdateOrderRequest;
 import br.com.zup.order.controller.response.OrderResponse;
 import br.com.zup.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,5 +32,11 @@ public class OrderController {
     @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public List<OrderResponse> getOrders() {
         return this.orderService.findAll();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void update(@RequestBody UpdateOrderRequest request){
+        this.orderService.update(request);
     }
 }

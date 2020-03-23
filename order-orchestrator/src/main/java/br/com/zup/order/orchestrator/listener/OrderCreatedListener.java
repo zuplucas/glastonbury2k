@@ -1,16 +1,14 @@
 package br.com.zup.order.orchestrator.listener;
 
-import java.io.IOException;
-
+import br.com.zup.order.orchestrator.configuration.KafkaConfiguration;
+import br.com.zup.order.orchestrator.event.OrderCreatedEvent;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.variable.Variables;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import br.com.zup.order.orchestrator.configuration.KafkaConfiguration;
-import br.com.zup.order.orchestrator.event.OrderCreatedEvent;
+import java.io.IOException;
 
 @Component
 public class OrderCreatedListener {
@@ -26,7 +24,6 @@ public class OrderCreatedListener {
     @KafkaListener(topics = "created-orders", groupId = KafkaConfiguration.CONSUMER_GROUP)
     public void listen(String message) throws IOException {
         OrderCreatedEvent event = this.objectMapper.readValue(message, OrderCreatedEvent.class);
-        System.out.println(event);
 
         runtimeService.startProcessInstanceByKey("order-process",
                 "ORDER-" + event.getOrderId(),
