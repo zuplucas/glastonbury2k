@@ -2,7 +2,6 @@ package br.com.zup.inventory.controller;
 
 import java.util.Random;
 
-import org.camunda.bpm.engine.delegate.BpmnError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,7 +24,7 @@ public class InventoryController implements InventoryApi {
 
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping(value = "/booking", consumes = MediaType.APPLICATION_JSON_VALUE)
-	public Boolean book(@RequestBody BookRequest request) throws BpmnError {
+	public Boolean book(@RequestBody BookRequest request) {
 		System.out.println("Inventory Booking book");
 		System.out.println(request.getOrderEntries());
 

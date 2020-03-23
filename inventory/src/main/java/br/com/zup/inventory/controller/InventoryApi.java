@@ -1,6 +1,5 @@
 package br.com.zup.inventory.controller;
 
-import org.camunda.bpm.engine.delegate.BpmnError;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
