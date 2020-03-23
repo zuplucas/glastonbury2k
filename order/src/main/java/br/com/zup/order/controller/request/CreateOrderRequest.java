@@ -48,7 +48,7 @@ public class CreateOrderRequest {
                 this.items.stream()
                         .map(OrderItemPart::toEntity)
                         .collect(Collectors.toList()),
-                "pending"
+                "PENDING"
         );
     }
 
@@ -96,7 +96,7 @@ public class CreateOrderRequest {
 
         public OrderItem toEntity() {
             return new OrderItem(
-                    this.id,
+                    UUID.randomUUID().toString(),
                     this.name,
                     this.amount,
                     this.quantity

@@ -1,15 +1,25 @@
 package br.com.zup.order.orchestrator.integration.inventory.request;
 
-import java.util.Map;
+import java.util.List;
 
 public class BookRequest {
-    private Map<String, Integer> orderEntries;
 
-    public Map<String, Integer> getOrderEntries() {
-        return orderEntries;
+    private String orderId;
+    private List<BookItemRequest> entries;
+
+    public String getOrderId() {
+        return orderId;
     }
 
-    public void setOrderEntries(Map<String, Integer> orderEntries) {
-        this.orderEntries = orderEntries;
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public List<BookItemRequest> getEntries() {
+        return entries;
+    }
+
+    public void setEntries(List<BookItemRequest> entries) {
+        this.entries = entries;
     }
 }
