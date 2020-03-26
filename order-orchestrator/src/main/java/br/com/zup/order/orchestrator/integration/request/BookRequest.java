@@ -1,4 +1,4 @@
-package br.com.zup.inventory.controller.request;
+package br.com.zup.order.orchestrator.integration.request;
 
 import java.util.Map;
 

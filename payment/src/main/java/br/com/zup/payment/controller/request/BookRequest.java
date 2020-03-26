@@ -1,4 +1,4 @@
-package br.com.zup.inventory.controller.request;
+package br.com.zup.payment.controller.request;
 
 import java.util.Map;
 

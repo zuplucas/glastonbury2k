@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1logf2o" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.0.3">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1logf2o" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.7.0">
   <bpmn:process id="order-process" name="Ordering Process" isExecutable="true">
     <bpmn:startEvent id="START_ORDER">
       <bpmn:outgoing>SequenceFlow_1vzuxpv</bpmn:outgoing>
@@ -13,7 +13,7 @@
       <bpmn:outgoing>SequenceFlow_1kqcrjj</bpmn:outgoing>
     </bpmn:parallelGateway>
     <bpmn:sequenceFlow id="SequenceFlow_1kqcrjj" sourceRef="PARALLEL_START_PAY" targetRef="MSG_PAYMENT_ANSWER" />
-    <bpmn:receiveTask id="MSG_PAYMENT_ANSWER" name="Payment Callback" messageRef="Message_19js4ew">
+    <bpmn:receiveTask id="MSG_PAYMENT_ANSWER" name="Payment Callback" camunda:asyncBefore="true" messageRef="Message_19js4ew">
       <bpmn:incoming>SequenceFlow_1kqcrjj</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1rgpt38</bpmn:outgoing>
     </bpmn:receiveTask>
@@ -37,12 +37,28 @@
       <bpmn:outgoing>SequenceFlow_1s3zz8j</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="SequenceFlow_0is44h2" sourceRef="TASK_FINISH_ORDER" targetRef="END_ORDER" />
-    <bpmn:serviceTask id="TASK_FINISH_ORDER" name="Finish Order" camunda:asyncBefore="true" camunda:delegateExpression="${finishOrderTask}">
+    <bpmn:serviceTask id="TASK_FINISH_ORDER" name="Finish Order" camunda:asyncBefore="true" camunda:delegateExpression="${orderTask}">
       <bpmn:incoming>SequenceFlow_1l16b01</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0is44h2</bpmn:outgoing>
     </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_051rstj" sourceRef="BondaryEvent_1" targetRef="TASK_CANCEL_ORDER" />
+    <bpmn:boundaryEvent id="BondaryEvent_1" attachedToRef="TASK_BOOK_TICKET">
+      <bpmn:outgoing>Flow_051rstj</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_00agxhc" errorRef="Error_0xje2fz" camunda:errorCodeVariable="errorCode" />
+    </bpmn:boundaryEvent>
+    <bpmn:serviceTask id="TASK_CANCEL_ORDER" name="Cancel Order" camunda:asyncBefore="true" camunda:delegateExpression="${orderTask}">
+      <bpmn:incoming>Flow_051rstj</bpmn:incoming>
+      <bpmn:outgoing>Flow_1nm25q3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="Event_0cix5qx">
+      <bpmn:incoming>Flow_1nm25q3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1nm25q3" sourceRef="TASK_CANCEL_ORDER" targetRef="Event_0cix5qx" />
   </bpmn:process>
   <bpmn:message id="Message_19js4ew" name="payment_callback" />
+  <bpmn:error id="Error_1dc2c93" name="Error_050og1l" errorCode="java.lang.RuntimeError" />
+  <bpmn:error id="Error_05oksmd" name="Error_2mo8tqj" errorCode="*" camunda:errorMessage="*" />
+  <bpmn:error id="Error_0xje2fz" name="Error_3efinsc" errorCode="InventoryApiError" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="order-process">
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="START_ORDER">
@@ -103,6 +119,25 @@
       <bpmndi:BPMNShape id="ServiceTask_0r5q8ii_di" bpmnElement="TASK_FINISH_ORDER">
         <dc:Bounds x="793" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_051rstj_di" bpmnElement="Flow_051rstj">
+        <di:waypoint x="393" y="178" />
+        <di:waypoint x="393" y="209" />
+        <di:waypoint x="343" y="209" />
+        <di:waypoint x="343" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_0f7y1zi_di" bpmnElement="BondaryEvent_1">
+        <dc:Bounds x="375" y="142" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_00aq3gz_di" bpmnElement="TASK_CANCEL_ORDER">
+        <dc:Bounds x="293" y="240" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0cix5qx_di" bpmnElement="Event_0cix5qx">
+        <dc:Bounds x="325" y="372" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1nm25q3_di" bpmnElement="Flow_1nm25q3">
+        <di:waypoint x="343" y="320" />
+        <di:waypoint x="343" y="372" />
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
