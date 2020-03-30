@@ -1,6 +1,7 @@
 package br.com.zup.order.orchestrator.event;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 public class OrderCreatedEvent {
@@ -8,16 +9,16 @@ public class OrderCreatedEvent {
     private String orderId;
     private String customerId;
     private BigDecimal amount;
-    private Map<String, Integer> items;
+    private List<OrderItemPartEvent> orderItems;
 
     public OrderCreatedEvent() {
     }
 
-    public OrderCreatedEvent(String orderId, String customerId, BigDecimal amount, Map<String, Integer> items) {
+    public OrderCreatedEvent(String orderId, String customerId, BigDecimal amount, List<OrderItemPartEvent> orderItems) {
         this.orderId = orderId;
         this.customerId = customerId;
         this.amount = amount;
-        this.items = items;
+        this.orderItems = orderItems;
     }
 
     public String getOrderId() {
@@ -44,11 +45,11 @@ public class OrderCreatedEvent {
         this.amount = amount;
     }
 
-    public Map<String, Integer> getItems() {
-        return items;
+    public List<OrderItemPartEvent> getOrderItems() {
+        return orderItems;
     }
 
-    public void setItems(Map<String, Integer> items) {
-        this.items = items;
+    public void setOrderItems(List<OrderItemPartEvent> orderItems) {
+        this.orderItems = orderItems;
     }
 }

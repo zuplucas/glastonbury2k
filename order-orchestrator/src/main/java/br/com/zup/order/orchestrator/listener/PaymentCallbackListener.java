@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.zup.order.orchestrator.configuration.KafkaConfiguration;
 import br.com.zup.order.orchestrator.event.OrderCreatedEvent;
+import br.com.zup.order.orchestrator.event.PaymentEvent;
 
 @Component
 public class PaymentCallbackListener {
@@ -23,14 +24,15 @@ public class PaymentCallbackListener {
         this.runtimeService = runtimeService;
     }
 
-    @KafkaListener(topics = "payment-event", groupId = KafkaConfiguration.CONSUMER_GROUP)
+    @KafkaListener(topics = "payment-events", groupId = KafkaConfiguration.CONSUMER_GROUP)
     public void listen(String message) throws IOException {
-        // Read message, parse, check orderId and payment result
-        String orderId = "TO BE DEFINED";
+
+        PaymentEvent paymentEvent = objectMapper.readValue(message, PaymentEvent.class);
+        boolean paymentResult = paymentEvent.getStatus().equals("PAYMENT_ACCEPTED");
 
         runtimeService.createMessageCorrelation("payment_callback")
-                .processInstanceBusinessKey("ORDER-" + orderId)
-                .setVariable("PAYMENT_RESULT", true)
+                .processInstanceBusinessKey("ORDER-" + paymentEvent.getOrderId())
+                .setVariable("PAYMENT_RESULT", paymentResult)
                 .correlateWithResult();
     }
 }

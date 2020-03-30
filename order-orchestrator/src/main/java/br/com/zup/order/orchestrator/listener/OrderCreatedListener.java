@@ -1,8 +1,11 @@
 package br.com.zup.order.orchestrator.listener;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.camunda.bpm.engine.RuntimeService;
+import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -28,8 +31,12 @@ public class OrderCreatedListener {
         OrderCreatedEvent event = this.objectMapper.readValue(message, OrderCreatedEvent.class);
         System.out.println(event);
 
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("ORDER", message);
+        variables.put("ORDER-ID", event.getOrderId());
+
         runtimeService.startProcessInstanceByKey("order-process",
-                "ORDER-" + event.getOrderId(),
-                Variables.putValue("ORDER", message));
+                "ORDER-" + event.getOrderId(), variables);
+
     }
 }

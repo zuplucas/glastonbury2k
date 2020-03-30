@@ -52,7 +52,7 @@ public class CreateOrderRequest {
         );
     }
 
-    public static class OrderItemPart {
+    public static class  OrderItemPart {
 
         private String id;
 

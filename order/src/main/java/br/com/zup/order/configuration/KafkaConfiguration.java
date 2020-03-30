@@ -20,6 +20,8 @@ import java.util.Map;
 @Configuration
 public class KafkaConfiguration {
 
+    public static final String CONSUMER_GROUP = "order-group-id";
+
     @Value(value = "${spring.kafka.bootstrap-servers}")
     private String bootstrap;
 
@@ -31,8 +33,18 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public NewTopic message() {
+    public NewTopic createdOrderTopic() {
         return new NewTopic("created-orders", 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic updateOrderEventsTopic() {
+        return new NewTopic("update-order-events", 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic paymentEventsTopic() {
+        return new NewTopic("payment-events", 1, (short) 1);
     }
 
     @Bean

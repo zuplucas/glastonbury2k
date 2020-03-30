@@ -35,6 +35,14 @@
             <artifactId>javax.el</artifactId>
             <version>3.0.0</version>
         </dependency>
+
+        <dependency>
+            <!-- Required to use PATCH -->
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-httpclient</artifactId>
+            <version>${feign.version}</version>
+        </dependency>
+
         <!-- camunda -->
         <dependency>
             <groupId>org.camunda.bpm.springboot</groupId>
