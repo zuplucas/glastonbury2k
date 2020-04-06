@@ -1,14 +1,15 @@
 package br.com.zup.order.orchestrator.task;
 
+import br.com.zup.order.orchestrator.event.order.OrderCreatedEvent;
+import br.com.zup.order.orchestrator.integration.inventory.InventoryApi;
+import br.com.zup.order.orchestrator.integration.inventory.request.BookItemRequest;
+import br.com.zup.order.orchestrator.integration.inventory.request.BookRequest;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import br.com.zup.order.orchestrator.event.OrderCreatedEvent;
-import br.com.zup.order.orchestrator.integration.inventory.InventoryApi;
-import br.com.zup.order.orchestrator.integration.inventory.request.BookRequest;
+import java.util.stream.Collectors;
 
 @Component
 public class BookingTask implements JavaDelegate{
@@ -26,7 +27,20 @@ public class BookingTask implements JavaDelegate{
         String orderVariable = (String)delegateExecution.getVariable("ORDER");
         OrderCreatedEvent event = this.objectMapper.readValue(orderVariable, OrderCreatedEvent.class);
         BookRequest bookRequest = new BookRequest();
-        bookRequest.setOrderEntries(event.getItems());
-        this.inventoryApi.book(bookRequest);
+        bookRequest.setOrderEntries(event.getItems().stream().map(itens -> new BookItemRequest(itens.getItem(),
+                itens.getQuantity())).collect(Collectors.toList()));
+        try {
+            this.inventoryApi.book(bookRequest);
+            delegateExecution.setVariable("NOSTOCK",false);;
+        }catch (Exception ex){
+            delegateExecution.setVariable("NOSTOCK",true);;
+        }
+
+
+
+
+
+
+
     }
 }

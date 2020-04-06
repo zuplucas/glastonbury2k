@@ -1,17 +1,19 @@
 package br.com.zup.order.service.impl;
 
-import br.com.zup.order.controller.request.CreateOrderRequest;
-import br.com.zup.order.controller.response.OrderResponse;
+import br.com.zup.order.controller.order.request.CreateOrderRequest;
+import br.com.zup.order.controller.order.response.OrderResponse;
+import br.com.zup.order.controller.status.request.StatusOrderRequest;
+import br.com.zup.order.entity.Order;
 import br.com.zup.order.event.OrderCreatedEvent;
+import br.com.zup.order.event.OrderItemCreatedEvent;
 import br.com.zup.order.repository.OrderRepository;
 import br.com.zup.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +36,10 @@ public class OrderServiceImpl implements OrderService {
                 orderId,
                 request.getCustomerId(),
                 request.getAmount(),
-                createItemMap(request)
+                request.getItems().stream().map(itens ->
+                        new OrderItemCreatedEvent(itens.getId(),
+                                itens.getQuantity())).
+                        collect(Collectors.toList())
         );
 
         this.template.send("created-orders", event);
@@ -42,14 +47,6 @@ public class OrderServiceImpl implements OrderService {
         return orderId;
     }
 
-    private Map<String, Integer> createItemMap(CreateOrderRequest request) {
-        Map<String, Integer> result = new HashMap<>();
-        for (CreateOrderRequest.OrderItemPart item : request.getItems()) {
-            result.put(item.getId(), item.getQuantity());
-        }
-
-        return result;
-    }
 
     @Override
     public List<OrderResponse> findAll() {
@@ -58,4 +55,16 @@ public class OrderServiceImpl implements OrderService {
                 .map(OrderResponse::fromEntity)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void updateStatusOrder(StatusOrderRequest statusOrderRequest){
+
+        Optional<Order> orderReject = orderRepository.findById(statusOrderRequest.getId());
+        orderReject.get().setStatus(statusOrderRequest.getStatus());
+
+        this.orderRepository.save(orderReject.get());
+
+    }
+
+
 }

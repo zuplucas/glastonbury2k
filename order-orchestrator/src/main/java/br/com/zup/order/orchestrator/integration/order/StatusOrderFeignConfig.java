@@ -1,4 +1,4 @@
-package br.com.zup.order.orchestrator.integration.inventory;
+package br.com.zup.order.orchestrator.integration.order;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Feign;
@@ -9,25 +9,25 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class InventoryFeignConfig {
+public class StatusOrderFeignConfig {
 
-    private String inventoryUrl;
+    private String orderUrl;
     private ObjectMapper objectMapper;
 
-    public InventoryFeignConfig(@Value(value = "${inventory.url}") String inventoryUrl,
-            ObjectMapper objectMapper) {
-        this.inventoryUrl = inventoryUrl;
+    public StatusOrderFeignConfig(@Value(value = "${order.url}") String orderUrl,
+                                  ObjectMapper objectMapper) {
+        this.orderUrl = orderUrl;
         this.objectMapper = objectMapper;
     }
 
 
     @Bean
-    public InventoryApi inventoryApi() {
+    public StatusOrderApi statusOrderApi() {
         return Feign.builder()
                 .encoder(new JacksonEncoder(objectMapper))
                 .decoder(new JacksonDecoder(objectMapper))
                 .logLevel(feign.Logger.Level.FULL)
-                .target(InventoryApi.class, inventoryUrl);
+                .target(StatusOrderApi.class, orderUrl);
 
     }
 }

@@ -1,4 +1,4 @@
-package br.com.zup.order.controller.response;
+package br.com.zup.order.controller.order.response;
 
 import br.com.zup.order.entity.Order;
 
