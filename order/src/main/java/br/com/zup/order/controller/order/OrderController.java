@@ -1,7 +1,7 @@
-package br.com.zup.order.controller;
+package br.com.zup.order.controller.order;
 
-import br.com.zup.order.controller.request.CreateOrderRequest;
-import br.com.zup.order.controller.response.OrderResponse;
+import br.com.zup.order.controller.order.request.CreateOrderRequest;
+import br.com.zup.order.controller.order.response.OrderResponse;
 import br.com.zup.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/orders")
@@ -32,4 +33,6 @@ public class OrderController {
     public List<OrderResponse> getOrders() {
         return this.orderService.findAll();
     }
+
+
 }
