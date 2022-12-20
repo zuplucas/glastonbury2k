@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 public class OrderCreatedEvent {
+    public static final String EVENT_NAME = "created-orders";
 
     private String orderId;
     private String customerId;

@@ -31,8 +31,8 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public NewTopic message() {
-        return new NewTopic("created-orders", 1, (short) 1);
+    public NewTopic createOrderTopic() {
+        return new NewTopic(OrderCreatedEvent.EVENT_NAME, 1, (short) 1);
     }
 
     @Bean

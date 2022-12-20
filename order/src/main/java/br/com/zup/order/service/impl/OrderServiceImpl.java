@@ -37,7 +37,7 @@ public class OrderServiceImpl implements OrderService {
                 createItemMap(request)
         );
 
-        this.template.send("created-orders", event);
+        this.template.send(OrderCreatedEvent.EVENT_NAME, event);
 
         return orderId;
     }

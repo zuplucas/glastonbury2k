@@ -1,14 +1,12 @@
 package br.com.zup.order.orchestrator.task;
 
-import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.camunda.bpm.engine.delegate.JavaDelegate;
-import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import br.com.zup.order.orchestrator.event.OrderCreatedEvent;
 import br.com.zup.order.orchestrator.integration.inventory.InventoryApi;
 import br.com.zup.order.orchestrator.integration.inventory.request.BookRequest;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.springframework.stereotype.Component;
 
 @Component
 public class BookingTask implements JavaDelegate{

@@ -5,118 +5,54 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.1.RELEASE</version>
-        <relativePath/>
+        <version>3.0.0</version>
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>br.com.zup</groupId>
     <artifactId>glastonbury2k</artifactId>
-    <packaging>pom</packaging>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
     <name>glastonbury2k</name>
     <description>Demo project for Spring Boot</description>
-
     <modules>
-        <module>order</module>
         <module>inventory</module>
+        <module>order</module>
         <module>payment</module>
         <module>order-orchestrator</module>
     </modules>
 
     <properties>
-        <java.version>1.8</java.version>
-        <postgresql.version>42.3.7</postgresql.version>
-        <hikari.version>3.2.0</hikari.version>
-        <hibernate.version>5.2.4.Final</hibernate.version>
-        <feign.version>9.5.0</feign.version>
-
-        <camunda.spring-boot.version>3.1.0</camunda.spring-boot.version>
+        <java.version>19</java.version>
+        <testcontainers.version>1.17.6</testcontainers.version>
     </properties>
-
-
-    <dependencyManagement>
-        <dependencies>
-
-
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-data-jpa</artifactId>
-                <version>2.1.4.RELEASE</version>
-            </dependency>
-
-
-            <!-- Feign Netflix -->
-            <dependency>
-                <groupId>io.github.openfeign</groupId>
-                <artifactId>feign-jackson</artifactId>
-                <version>${feign.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>io.github.openfeign</groupId>
-                <artifactId>feign-core</artifactId>
-                <version>${feign.version}</version>
-            </dependency>
-            <!-- camunda -->
-            <dependency>
-                <groupId>org.camunda.bpm.springboot</groupId>
-                <artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>
-                <version>${camunda.spring-boot.version}</version>
-            </dependency>
-
-            <!-- Databases -->
-            <dependency>
-                <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>${postgresql.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-java8</artifactId>
-                <version>${hibernate.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.zaxxer</groupId>
-                <artifactId>HikariCP</artifactId>
-                <version>${hikari.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.h2database</groupId>
-                <artifactId>h2</artifactId>
-                <scope>runtime</scope>
-                <version>2.1.210</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
-
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
-        </dependency>
 
-
-        <!-- test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka-test</artifactId>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>${testcontainers.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>
