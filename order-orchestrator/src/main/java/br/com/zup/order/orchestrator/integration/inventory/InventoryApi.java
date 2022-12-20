@@ -6,7 +6,11 @@ import feign.RequestLine;
 
 public interface InventoryApi {
 
-    @RequestLine("POST /booking")
-    @Headers("Content-Type: application/json")
-    void book(BookRequest request);
+  @RequestLine("POST /booking")
+  @Headers("Content-Type: application/json")
+  void book(BookRequest request);
+
+  @RequestLine("POST /unbooking")
+  @Headers("Content-Type: application/json")
+  void unbook(BookRequest request);
 }
