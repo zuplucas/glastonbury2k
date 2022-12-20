@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import feign.Feign;
+import feign.httpclient.ApacheHttpClient;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
 
@@ -24,8 +25,9 @@ public class InventoryFeignConfig {
 
 
     @Bean
-    public InventoryApi paymentApi() {
+    public InventoryApi inventoryApi() {
         return Feign.builder()
+                .client(new ApacheHttpClient())
                 .encoder(new JacksonEncoder(objectMapper))
                 .decoder(new JacksonDecoder(objectMapper))
                 .logLevel(feign.Logger.Level.FULL)
