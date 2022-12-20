@@ -8,5 +8,5 @@ import br.com.zup.inventory.controller.request.BookRequest;
 public interface InventoryApi {
 
     @PostMapping("/booking")
-    void book(@RequestBody BookRequest request);
+    Boolean book(@RequestBody BookRequest request);
 }

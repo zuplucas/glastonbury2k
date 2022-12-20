@@ -1,0 +1,92 @@
+version: "3.0"
+services:
+        
+    elasticsearch:
+      image: docker.elastic.co/elasticsearch/elasticsearch:7.6.1
+      container_name: elasticsearch
+      ports:
+        - "9200:9200"
+        - "9300:9300"
+      environment:
+        - ELASTICSEARCH_USERNAME=elastic
+        - ELASTICSEARCH_PASSWORD=changeme
+        - xpack.security.enabled=false
+        - path.data=/usr/share/elasticsearch/data
+        - discovery.type=single-node
+      networks:
+        - order-network
+        
+    kibana:
+      image: docker.elastic.co/kibana/kibana:7.6.1
+      container_name: kibana
+      links:
+        - "elasticsearch"
+      ports:
+        - "5601:5601"
+      networks:
+        - order-network
+
+    fluentd:
+      build: ./fluentd
+      volumes:
+        - ./fluentd/conf:/fluentd/etc
+      container_name: fluentd
+      ports:
+        - "24224:24224"
+        - "24224:24224/udp"
+      links:
+        - "elasticsearch"
+      networks:
+        - order-network
+
+    jaeger:
+      image: jaegertracing/all-in-one:1.17.1
+      container_name: jaeger
+      ports:
+        - "5775:5775/udp"
+        - "6831:6831/udp"
+        - "6832:6832/udp"
+        - "16686:16686"
+      networks:
+        - order-network    
+
+    prometheus:
+      image: prom/prometheus:v2.16.0
+      container_name: prometheus
+      ports:
+        - "9090:9090"
+      command:
+        - "--config.file=/etc/prometheus/prometheus.yml"
+      volumes:
+        - ~/Desenv/Fontes/glastonbury2k/glastonbury2k/inventory/prometheus/conf/prometheus.yml:/etc/prometheus/prometheus.yml
+      networks:
+        - order-network
+
+    grafana:
+      image: grafana/grafana:6.7.1
+      container_name: grafana
+      ports:
+        - "3000:3000"
+      networks:
+        - order-network   
+
+    inventory:
+        image: inventory:latest
+        container_name: inventory
+        ports:
+        - "8081:8081"
+        working_dir: /
+        command: java -jar inventory.jar
+        links:
+          - "fluentd"
+        networks:
+        - order-network
+        logging:
+          driver: "fluentd"
+          options:
+            fluentd-address: localhost:24224
+            tag: testlogging.log 
+        
+networks:
+    order-network:
+         external: true

@@ -1,6 +1,5 @@
 package br.com.zup.order.orchestrator.task;
 
-import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
@@ -8,20 +7,20 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.zup.order.orchestrator.event.OrderCreatedEvent;
-import br.com.zup.order.orchestrator.integration.InventoryApi;
+import br.com.zup.order.orchestrator.integration.OrderApi;
 import br.com.zup.order.orchestrator.integration.request.BookRequest;
 
 @Component
-public class BookingTask implements JavaDelegate {
+public class OrderTask implements JavaDelegate {
 
+	private static final String TASK_CANCEL_ORDER = "TASK_CANCEL_ORDER";
+	private static final String TASK_FINISH_ORDER = "TASK_FINISH_ORDER";
 	private static final String ORDER = "ORDER";
-	private static final String TASK_BOOK_TICKET = "TASK_BOOK_TICKET";
-
-	private InventoryApi inventoryApi;
+	private OrderApi orderApi;
 	private ObjectMapper objectMapper;
 
-	public BookingTask(InventoryApi inventoryApi, ObjectMapper objectMapper) {
-		this.inventoryApi = inventoryApi;
+	public OrderTask(OrderApi orderApi, ObjectMapper objectMapper) {
+		this.orderApi = orderApi;
 		this.objectMapper = objectMapper;
 	}
 
@@ -34,11 +33,11 @@ public class BookingTask implements JavaDelegate {
 		bookRequest.setOrderEntries(event.getItems());
 
 		switch (delegateExecution.getCurrentActivityId()) {
-		case TASK_BOOK_TICKET:
-			if (!this.inventoryApi.book(bookRequest)) {
-				System.out.println("TEST ERROR TEST ERROR TEST ERROR TEST ERROR ");
-				throw new BpmnError("InventoryApiError", "Error Message");
-			}
+		case TASK_FINISH_ORDER:
+			this.orderApi.finishOrder(bookRequest);
+			break;
+		case TASK_CANCEL_ORDER:
+			this.orderApi.cancelOrder(bookRequest);
 			break;
 		default:
 			break;
