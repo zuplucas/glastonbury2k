@@ -1,5 +1,6 @@
 package br.com.zup.order.orchestrator.task;
 
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
@@ -26,7 +27,14 @@ public class BookingTask implements JavaDelegate{
         String orderVariable = (String)delegateExecution.getVariable("ORDER");
         OrderCreatedEvent event = this.objectMapper.readValue(orderVariable, OrderCreatedEvent.class);
         BookRequest bookRequest = new BookRequest();
+
+        if(event.getItems() == null || event.getItems().size() == 0 || !event.getCustomerId().contains("23655ac04b8a")) {
+//        	throw new BookException();
+        	throw new BpmnError("428");
+        }
+
         bookRequest.setOrderEntries(event.getItems());
+        bookRequest.getOrderEntries().put("orderId", event.getOrderId());
         this.inventoryApi.book(bookRequest);
     }
 }
