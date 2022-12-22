@@ -29,11 +29,11 @@ curl -X POST --header "Content-Type: application/json" http://localhost:8080/ord
 ```
 
 Este comando gerará uma ordem de pedido e iniciará o workflow.
-Porém, haverá um erro no workflow, pois existe uma task não implementada no fluxo (paymentTask).
+Porém, o workflow ficará parado, pois, a task que solicita o pagamento não está implementada.
 
-4- Acesse o dashboard do workflow (http://localhost:8083)\
-User: techlead \
-Password: zup@123
+4- Acesse o dashboard do workflow (http://localhost:8084) que subiu via docker-compose \
+User: demo \
+Password: demo
 
 No dashboard, acesse os processos em execução e haverá um processo parado com erro no fluxo, informando o erro na tarefa.
 
@@ -67,6 +67,9 @@ Para isso a API de pagamento poderá retornar um ID de solicitação ou podemos 
 Este ponto apenas geraria erro se houvesse algum problema na API de pagamentos (ou outro problema técnico), 
 neste caso, podemos seguir com o fluxo de retentativa de solicitação.
 
+A tarefa de pagamento deverá ser implementada semelhante ao booking. Haverá um tópico do camunda
+que poderá ser ouvido *sendPaymentTopic*.
+
 ## 3. Confirmação ou Rejeição do pagamento
 Após o processamento do pagamento, este poderá ser rejeitado ou aprovado.
 E, então o sistema de pagamentos deverá enviar um callback para o orquestrador indicando qual a situação do pagamento.\
@@ -76,6 +79,9 @@ b. Realizar a comunicação do callback por messageria no kafka.
 
 Iremos seguir com a segunda abordagem. O sistema de pagamentos deverá postar uma mensagem no tópico correspondente
 indicando qual a situação da cobrança.
+Há um listener no orquestrador que está monitorando a fila do kafka no tópico *payment-event*.
+Deverá ser implementado o evento ou o parser da mensagem, para extrair o orderId do evento e descobrir qual fluxo deverá 
+ser notificado.
 
 ### 3.1. Pagamento confirmado
 Caso o pagamento seja confirmado, o fluxo da orquestração deverá seguir para o passo de finalização da ordem.
@@ -86,3 +92,4 @@ do ingresso realizado no *PASSO 1* e depois indicar ao sistema de ordem que o pe
 
 ## 4. Finalização da Ordem
 A ordem deverá ser finalizada no orquestrador conforme o estado do pagamento.
+A finalização também precisa ser implementada através do tópico *finishOrderTopic* do camunda.

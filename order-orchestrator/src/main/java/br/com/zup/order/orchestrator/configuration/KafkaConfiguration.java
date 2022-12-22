@@ -17,7 +17,7 @@ import java.util.Map;
 public class KafkaConfiguration {
     public static final String CONSUMER_GROUP = "orchestrator-group-id";
 
-    private String bootstrap;
+    private final String bootstrap;
 
     public KafkaConfiguration(@Value(value = "${spring.kafka.bootstrap-servers}") String bootstrap) {
         this.bootstrap = bootstrap;
