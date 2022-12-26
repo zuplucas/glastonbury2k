@@ -1,6 +1,6 @@
 package br.com.zup.order.orchestrator.subscription;
 
-import br.com.zup.order.orchestrator.event.OrderCreatedEvent;
+import br.com.zup.order.orchestrator.domain.WorkflowOrderVariable;
 import br.com.zup.order.orchestrator.integration.inventory.InventoryApi;
 import br.com.zup.order.orchestrator.integration.inventory.request.BookRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,15 +19,15 @@ public class BookingTaskHandler {
     }
 
     public void handleBook(String orderJson) {
-        OrderCreatedEvent event = null;
         try {
-            event = this.objectMapper.readValue(orderJson, OrderCreatedEvent.class);
+            WorkflowOrderVariable order = this.objectMapper.readValue(orderJson, WorkflowOrderVariable.class);
+
+            BookRequest bookRequest = new BookRequest();
+            bookRequest.setOrderEntries(order.items());
+            this.inventoryApi.book(bookRequest);
         } catch (JsonProcessingException e) {
             System.out.println(e);
             throw new RuntimeException("Failure to parse ORDER variable");
         }
-        BookRequest bookRequest = new BookRequest();
-        bookRequest.setOrderEntries(event.getItems());
-        this.inventoryApi.book(bookRequest);
     }
 }

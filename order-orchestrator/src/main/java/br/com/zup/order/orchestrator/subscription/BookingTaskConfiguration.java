@@ -35,7 +35,9 @@ public class BookingTaskConfiguration {
             externalTaskService.complete(externalTask,
                     Collections.singletonMap("booked", newValue));
 
-            System.out.println("The External Task " + externalTask.getId() + " has been completed!");
+            System.out.println("The External Task " + externalTask.getId()
+                    + " for process " + externalTask.getProcessInstanceId()
+                    + " has been completed!");
         };
     }
 

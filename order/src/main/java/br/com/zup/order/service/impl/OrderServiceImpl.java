@@ -2,11 +2,12 @@ package br.com.zup.order.service.impl;
 
 import br.com.zup.order.controller.request.CreateOrderRequest;
 import br.com.zup.order.controller.response.OrderResponse;
-import br.com.zup.order.event.OrderCreatedEvent;
+import br.com.zup.order.integration.orchestrator.OrderOrchestratorApi;
+import br.com.zup.order.integration.orchestrator.request.StartFlowRequest;
+import br.com.zup.order.integration.orchestrator.response.StartFlowResponse;
 import br.com.zup.order.repository.OrderRepository;
 import br.com.zup.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -17,28 +18,29 @@ import java.util.stream.Collectors;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private OrderRepository orderRepository;
-    private KafkaTemplate<String, OrderCreatedEvent> template;
+    private final OrderRepository orderRepository;
+    private final OrderOrchestratorApi orchestratorApi;
 
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, KafkaTemplate<String, OrderCreatedEvent> template) {
+    public OrderServiceImpl(OrderRepository orderRepository, OrderOrchestratorApi orchestratorApi) {
         this.orderRepository = orderRepository;
-        this.template = template;
+        this.orchestratorApi = orchestratorApi;
     }
 
     @Override
     public String save(CreateOrderRequest request) {
         String orderId = this.orderRepository.save(request.toEntity()).getId();
 
-        OrderCreatedEvent event = new OrderCreatedEvent(
+        StartFlowRequest flowRequest = new StartFlowRequest(
                 orderId,
                 request.getCustomerId(),
                 request.getAmount(),
                 createItemMap(request)
         );
 
-        this.template.send(OrderCreatedEvent.EVENT_NAME, event);
-
+        StartFlowResponse orchestratorResponse = orchestratorApi.startFlow(flowRequest);
+        System.out.println("Orchestrator process " + orchestratorResponse.processId() +
+                " for order " + orchestratorResponse.orderId());
         return orderId;
     }
 

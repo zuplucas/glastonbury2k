@@ -3,7 +3,7 @@ Tech Leads Training
 
 # Como subir a aplicação:
 
-1- Inicie o docker-compose para subir o kafka
+1- Inicie o docker-compose para subir o camunda
 
 2- Suba todos os módulos do projeto (não há dependência de ordem)
 - Order
@@ -77,11 +77,10 @@ Para isso, existem 2 alternativas básicas de integração: \
 a. Implementar um serviço no orquestrador que receberá o callback\
 b. Realizar a comunicação do callback por messageria no kafka.
 
-Iremos seguir com a segunda abordagem. O sistema de pagamentos deverá postar uma mensagem no tópico correspondente
-indicando qual a situação da cobrança.
-Há um listener no orquestrador que está monitorando a fila do kafka no tópico *payment-event*.
-Deverá ser implementado o evento ou o parser da mensagem, para extrair o orderId do evento e descobrir qual fluxo deverá 
-ser notificado.
+Iremos seguir com a primeira abordagem (já que esta versão seria sem o uso de kafka). 
+O sistema de pagamentos deverá realizar uma requisição para o orquestrator informando a ordem e a situação do pagamento.
+
+Há um controller no orquestrador que receberá essa requisição e irá repassar ao workflow o callback enviado.
 
 ### 3.1. Pagamento confirmado
 Caso o pagamento seja confirmado, o fluxo da orquestração deverá seguir para o passo de finalização da ordem.

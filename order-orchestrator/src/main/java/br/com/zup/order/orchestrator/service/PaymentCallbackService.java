@@ -1,43 +1,43 @@
-package br.com.zup.order.orchestrator.listener;
+package br.com.zup.order.orchestrator.service;
 
-import br.com.zup.order.orchestrator.configuration.KafkaConfiguration;
 import br.com.zup.order.orchestrator.integration.camunda.CamundaApi;
 import br.com.zup.order.orchestrator.integration.camunda.request.CorrelationMessageRequest;
 import br.com.zup.order.orchestrator.integration.camunda.request.VariableItem;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.variable.type.ValueType;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class PaymentCallbackListener {
-
+public class PaymentCallbackService {
     private final ObjectMapper objectMapper;
     private final CamundaApi camundaApi;
 
-    public PaymentCallbackListener(ObjectMapper objectMapper, CamundaApi camundaApi) {
+    public PaymentCallbackService(ObjectMapper objectMapper, CamundaApi camundaApi) {
         this.objectMapper = objectMapper;
         this.camundaApi = camundaApi;
     }
 
-    @KafkaListener(topics = "payment-event", groupId = KafkaConfiguration.CONSUMER_GROUP)
-    public void listen(String message) throws IOException {
-        // Read message, parse, check orderId and payment result
-        String orderId = "TO BE DEFINED";
-
+    public void process(String orderId, Object paymentResponse) {
         System.out.println("Sending payment response" + orderId);
 
+        boolean isPaymentOk = true;
+
         Map<String, VariableItem> variables = new HashMap<>();
-        variables.put("PAYMENT_RESULT", new VariableItem("true", ValueType.BOOLEAN.getName()));
+        variables.put("PAYMENT_RESULT", new VariableItem(Boolean.toString(isPaymentOk), ValueType.BOOLEAN.getName()));
+
         CorrelationMessageRequest correlation = CorrelationMessageRequest.fromBusinessKey(
                 "payment_callback", "ORDER-" + orderId, variables);
+
         try {
             System.out.println(objectMapper.writeValueAsString(correlation));
+
+            if (paymentResponse != null) {
+                System.out.println("Payment response " + objectMapper.writeValueAsString(paymentResponse));
+            }
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
