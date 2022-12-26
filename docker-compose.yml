@@ -3,10 +3,29 @@ services:
   camunda:
     image: camunda/camunda-bpm-platform:run-latest
     command: bash -c "./start.sh --rest --swaggerui --webapps"
+    depends_on:
+      - postgres
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres-camunda
+      - SPRING_DATASOURCE_USERNAME=camunda
+      - SPRING_DATASOURCE_PASSWORD=camundapwd
+      - SPRING_DATASOURCE_DRIVER-CLASS-NAME=org.postgresql.Driver
+      - SPRING_JPA_DATABASE-PLATFORM=org.hibernate.dialect.PostgreSQLDialect
     ports:
       - "8084:8080"
     volumes:
       - ./docker-files/bpmns/:/camunda/configuration/resources/:ro
+    networks:
+      - compose_glaston_camunda
+
+  postgres:
+    image: 'postgres:13.1-alpine'
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=postgres-camunda
+      - POSTGRES_USER=camunda
+      - POSTGRES_PASSWORD=camundapwd
     networks:
       - compose_glaston_camunda
 

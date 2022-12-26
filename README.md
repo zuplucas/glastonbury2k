@@ -3,7 +3,7 @@ Tech Leads Training
 
 # Como subir a aplicação:
 
-1- Inicie o docker-compose para subir o camunda
+1- Inicie o docker-compose para subir o camunda e o banco postgres
 
 2- Suba todos os módulos do projeto (não há dependência de ordem)
 - Order
@@ -54,6 +54,13 @@ Note que usando o *camunda* como orquestrador, temos um processo visual para o c
 toda atividade de negócio estar indicada no fluxo, de tal forma que o usuário consiga identificar qual o 'step' ofensor,
 qual o ‘step’ onde os clientes estão esperando mais tempo por respostas, etc.
 
+Esta versão consta com um banco de dados postgres para o camunda. Desta forma, fica um armazenamento persistente 
+(ao contrário do H2). Assim, caso necessite alterar o fluxo do camunda (utilizando o *camunda modeler*),
+agora precisamos apenas salvar o bpmn na pasta (./docker-files/bpmns) e reiniciar o container do camunda.
+Desde que o volume do docker do postgres não seja apagado, os fluxos ainda existirão e até mesmo os processos
+antigos estarão no mesmo passo de quando o container do camunda foi reiniciado. Ou seja, podemos iniciar um fluxo de workflow,
+verificar o problema, ajustar o processo, ou criar uma task de listener e reiniciar o camunda que os fluxos com problema
+irão seguir.
 
 ## 1. Reservar o ticket
 Em nosso fluxo, iniciamos com a "reserva dos ingressos", que poderá retornar que existe em estoque ou não. \
